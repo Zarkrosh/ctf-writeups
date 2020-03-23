@@ -1,4 +1,4 @@
-# Write-up CuarenteFa
+# Write-up CuarenTeFa
 
 ## Esteganografía - wellHidden - 300
 <p align="center">
