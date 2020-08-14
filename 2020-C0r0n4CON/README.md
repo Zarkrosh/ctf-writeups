@@ -1,13 +1,12 @@
 # Write-up C0r0n4CON
 
-[Welcome](#Welcome-\(1\))
-[Stego - Paperrolling](#Stego-Paperrolling)
-[Stego - DNACovid19](#Stego-DNACovid19)
-[Stego - TODOVAASALIRBIEN](#Stego-TODOVAASALIRBIEN)
+* [Welcome](#welcome)
+* [Stego - Paperrolling](#stego---paperrolling)
+* [Stego - DNACovid19](#stego---dnacovid19)
+* [Stego - TODOVAASALIRBIEN](#stego---todovaasalirbien)
 
 
-
-## Welcome (1)
+## Welcome
 En una de las IPs que proporcionan para el reto, veo que indican que el objetivo es llegar a welcome() y nos dan el código fuente para ello.
 
 ```
@@ -51,7 +50,7 @@ La cosa está en conseguir que la entrada que se le proporcione a través del pa
 **flag{welcome_b00mer_<redacted>!}**
 
 
-## Stego - Paperrolling (50)
+## Stego - Paperrolling
 <p align="center">
   <img src="images/paperrolling.png">
 </p>
@@ -67,7 +66,7 @@ Hago un diccionario con cewl de la página: `cewl https://es.wikipedia.org/wiki/
 **flag{maXiroll<censored>}**
 
 
-## Stego - DNACovid19 (100)
+## Stego - DNACovid19
 <p align="center">
   <img src="images/dnacovid19.png">
 </p>
@@ -81,7 +80,7 @@ La salida es una cadena en Base32, ya que está todo en mayúsculas, y al decodi
 **flag{MuRcIeLaG0_<censored>}**
 
 
-## Stego - TODOVAASALIRBIEN (100)
+## Stego - TODOVAASALIRBIEN
 <p align="center">
   <img src="images/todovaasalirbien.png">
 </p>
