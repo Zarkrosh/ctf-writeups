@@ -1,9 +1,9 @@
 # Write-up C0r0n4CON
 
-[Welcome]
-[Stego - Paperrolling]
-[Stego - DNACovid19]
-[Stego - TODOVAASALIRBIEN]
+[Welcome](#Welcome)
+[Stego - Paperrolling](#Stego-Paperrolling)
+[Stego - DNACovid19](#Stego-DNACovid19)
+[Stego - TODOVAASALIRBIEN](#Stego-TODOVAASALIRBIEN)
 
 
 
