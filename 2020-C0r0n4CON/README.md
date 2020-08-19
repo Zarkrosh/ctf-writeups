@@ -7,7 +7,6 @@
 * [Forensics - wall_paint](forensics---wall_paint)
 
 
-
 ## Welcome
 En una de las IPs que proporcionan para el reto, veo que indican que el objetivo es llegar a welcome() y nos dan el código fuente para ello.
 
