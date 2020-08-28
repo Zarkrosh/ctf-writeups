@@ -1,16 +1,17 @@
 # Write-up RESTCON CTF
 
-[Forensics - Nagic](#forensics---magic)
-[Forensics - Dance Monkey](#forensics---dance-monkey)
-[Forensics - Dumpster Diving 1](#forensics---dumpster-diving-1)
-[Forensics - Mirror](#forensics---mirror)
-[Forensics - Binod](#forensics---binod)
-[Forensics - Bad Cat](#forensics---bad-cat)
-[Misc - QR Code](#misc---qr-code)
-[Web - I am secure](#web---i-am-secure)
-[Web - Developer Be Careful](#web---developer-be-careful)
-[Web - Play With Django](#web---play-with-django)
-[Basic - In Plain Sight](#basic---in-plain-sight)
+* [Forensics - Magic](#forensics---magic)
+* [Forensics - Dance Monkey](#forensics---dance-monkey)
+* [Forensics - Dumpster Diving 1](#forensics---dumpster-diving-1)
+* [Forensics - Mirror](#forensics---mirror)
+* [Forensics - Binod](#forensics---binod)
+* [Forensics - Bad Cat](#forensics---bad-cat)
+* [Misc - QR Code](#misc---qr-code)
+* [Web - I am secure](#web---i-am-secure)
+* [Web - Developer Be Careful](#web---developer-be-careful)
+* [Web - Play With Django](#web---play-with-django)
+* [Basic - In Plain Sight](#basic---in-plain-sight)
+* [Basic - Weirdo](#basic---weirdo)
 
 
 ## Forensics - Magic
@@ -119,7 +120,7 @@ El ZIP contiene 5000 imágenes de códigos QR, de los cuales uno contiene la fla
 **RESTCON{LMAO_YOU_GOT_ME}**
 
 
-## Web -  I am secure
+## Web - I am secure
 
 El archivo **robots.txt** contiene:
 ```
