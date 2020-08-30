@@ -15,11 +15,11 @@
 
 ## Forensics - Memory 1
 
-**Descripción:**
-Give the hostname, username and password in format FwordCTF{hostname_username_password}.
-
-**Solución:**
 Archivos: <a href="https://drive.google.com/file/d/1Wcnb2fWdNj_IkWyiAUJD0gyx7bZsHHci/view?usp=sharing">foren.7z</a>
+
+
+> Give the hostname, username and password in format FwordCTF{hostname_username_password}.
+
 
 Se trata de un dump de memoria, por lo que se utiliza **Volatility**.
 Con imageinfo obtengo que se trata de un dump con el perfil Win7SP1x64. El nombre del equipo se encuentra en el registro, por lo general en la clave 'HKLM\SYSTEM\ControlSet001\Control\ComputerName\ComputerName'.
@@ -58,11 +58,8 @@ Mimikatz proporciona en claro la contraseña:
 
 ## Forensics - Memory 2
 
-**Descripción:**
-I had a secret conversation with my friend on internet. On which channel were we chatting?
+> I had a secret conversation with my friend on internet. On which channel were we chatting?
 
-
-**Solución:**
 En la salida chromehistory se ve que ha estado chateando en un IRC. Hago un dump de la memoria de todos los procesos de chrome visibles en pstree y luego un strings para obtener la flag:
 
 **FwordCTF{top_secret_channel}**
@@ -71,11 +68,9 @@ En la salida chromehistory se ve que ha estado chateando en un IRC. Hago un dump
 
 ## Forensics - Memory 3
 
-**Descripción:**
-He sent me a secret file , can you recover it?
-PS: NO BRUTEFORCE NEEDED FOR THE PASSWORD
+> He sent me a secret file , can you recover it?
+> PS: NO BRUTEFORCE NEEDED FOR THE PASSWORD
 
-**Solución:**
 En el mismo dump de memoria de antes, hago un grep ahora con el nombre del canal y el prefijo de mensaje privado para observar la conversación ``PRIVMSG #FwordCTF{top_secret_channel}``
 <p align="center">
   <img src="images/memory_5.png">
@@ -93,9 +88,8 @@ Dentro del ZIP está flag en una imagen:
 
 ## Forensics - Memory 4
 
-**Descripción:** Since i'm a geek, i hide my secrets in weird places.
+> Since i'm a geek, i hide my secrets in weird places.
 
-**Solución:**
 La flag está escondida en el registro, en NTUSER.dat.
 ```
 volatility -f foren.raw --profile=Win7SP1x64 printkey -o 0xfffff8a0033fe410
@@ -125,10 +119,8 @@ Jugando con los valores de desplazamiento y anchura del diálogo se puede ver la
 
 ## OSINT - Identity Fraud
 
-**Descripcion:**
-Someone stole our logo and created a team named "Eword". In order to find him, I created a fake twitter account (@1337bloggs) to join Eword team. Fortunately, they replied to the fake account and gave me a task to solve. So, if I solve it, they will accept me as a team member. ... Can you help me in solving the task?
+> Someone stole our logo and created a team named "Eword". In order to find him, I created a fake twitter account (@1337bloggs) to join Eword team. Fortunately, they replied to the fake account and gave me a task to solve. So, if I solve it, they will accept me as a team member. ... Can you help me in solving the task?
 
-**Solución:**
 Buscando las respuestas de la cuenta de Twitter @1337bloggs (https://twitter.com/1337bloggs/with_replies) me encuentro con una conversación con @EwordTeam. En ella le ofrecen unirse al equipo si consigue resolver “algo” que hay en su página de CTFtime, cuyo enlace está en la descripción de la cuenta. 
 
 <p align="center">
@@ -187,14 +179,12 @@ Ahora sí se puede apreciar la flag.
 
 ## Bash - CapiCapi
 
-**Descripción:**
-You have to do some privilege escalation in order to read the  flag! Use the following SSH credentials to connect to the server, each  participant will have an isolated environment so you only have to pwn  me! 
+> You have to do some privilege escalation in order to read the  flag! Use the following SSH credentials to connect to the server, each  participant will have an isolated environment so you only have to pwn  me! 
+>
+> SSH Credentials 
+> ssh -p 2222 ctf@capicapi.fword.wtf 
+> Password: FwordxKahla
 
-SSH Credentials 
-ssh -p 2222 ctf@capicapi.fword.wtf 
-Password: FwordxKahla
-
-**Solución:**
 Listando las capabilities (```getcap -r / 2>/dev/null```) me encuentro con que el programa **/usr/bin/tar** tiene la capacidad de leer cualquier archivo del sistema (**cap_dac_read_search+ep**). Para acceder a la flag bastaría con comprimir la flag para luego descomprimirla en un archivo que sí tenga permiso de lectura para el usuario actual:
 
 ```
@@ -211,14 +201,12 @@ cat flag.txt
 
 ## Bash - Bash is fun
 
-**Descripción:**
-Bash is fun, prove me wrong and do some privesc.  
 
-SSH Credentials 
-ssh -p 2222 ctf@funbash.fword.wtf 
-Password: FwOrDAndKahl4FTW 
-
-**Solución:**
+> Bash is fun, prove me wrong and do some privesc.  
+>
+> SSH Credentials 
+> ssh -p 2222 ctf@funbash.fword.wtf 
+> Password: FwOrDAndKahl4FTW 
 
 La flag solo puede ser leída por root o por un usuario del grupo **user-privileged**:
 <p align="center">
@@ -226,7 +214,7 @@ La flag solo puede ser leída por root o por un usuario del grupo **user-privile
 </p>
 
 La salida de ```sudo -l``` indica que puedo ejecutar el script **welcome.sh** como user-privileged, el cual puede ver el contenido de flag.txt. El script es el siguiente:
-```
+```bash
 #!/bin/bash
 name="greet"
 while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do case $1 in
@@ -281,8 +269,7 @@ El archivo comprimido contiene un script en Python que desordena y cifra una fla
 
 Un **detalle importante** que me hizo perder bastante tiempo, es que debe correrse con **Python3**. Entre las versiones de Python diferentes no se genera la misma secuencia de números para la misma semilla.
 
-```
-
+```python
 #!/usr/bin/python3
 #-*- encoding=UTF8 -*-
 from Crypto.Cipher import AES
@@ -407,6 +394,10 @@ print("[*] Cifrado: " + encrypted)
 crack(encrypted)
 ```
 
+<p align="center">
+  <img src="images/tornado_1.png">
+</p>
+
 **FwordCTF{peekaboo_i_am_the_flag_!\_i_am_the_danger_52592bbfcd8}**
 
 
@@ -415,14 +406,12 @@ crack(encrypted)
 
 Archivos: <a href="challs/osint/Villages.zip">Villages.zip</a>
 
-**Descripción**
-We have found a flash memory in the crime scene, and it contains 3 images of different villages. So, the criminal may be hiding in one of these villages! Can you locate them?
-Flag Format: FwordCTF{}
-* Separate between the villages names using underscores ( _ ).
-* All the villages names are in lowercase letters.
-* There is no symbols in the villages names.
+> We have found a flash memory in the crime scene, and it contains 3 images of different villages. So, the criminal may be hiding in one of these villages! Can you locate them?
+> Flag Format: FwordCTF{}
+> * Separate between the villages names using underscores ( _ ).
+> * All the villages names are in lowercase letters.
+> * There is no symbols in the villages names.
 
-**Solución**
 La primera imagen sale tras unas cuantas fotos similares en la búsqueda por imágenes de Yandex. Se trata de un hotel famoso en Llanfairpwllgwyngyll, Gales.
 
 <p align="center">
@@ -473,7 +462,7 @@ Google Maps: https://www.google.com/maps/@35.168796,-5.2683641,3a,89.1y,122.25h,
 </p>
 
 Para hallar los valores, realizo la suma del primer valor con el resto, lo cual supone 1336 operaciones. La restante se utiliza para hallar la suma entre el segundo y el tercer elemento, suficiente para resolver la ecuación. Utilizo **Z3**:
-```
+```python
 #!/usr/bin/python3
 from pwn import *
 from z3 import *
