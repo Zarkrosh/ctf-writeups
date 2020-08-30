@@ -133,7 +133,7 @@ Al acceder a la página (https://ctftime.org/team/131587) no se ve nada aparte d
   <img src="images/identity_2.png">
 </p>
 
-Sin embargo, hay una captura en WaybackMachine en la que se aprecia la pista, una dirección de Pastebin: http://web.archive.org/web/20200826195056/https://pastebin.com/8bk9qLX1
+Sin embargo, hay una captura en WaybackMachine en la que se aprecia la pista, una dirección de Pastebin: http://web.archive.org/web/20200826195056/https://ctftime.org/team/131587
 
 <p align="center">
   <img src="images/identity_3.png">
