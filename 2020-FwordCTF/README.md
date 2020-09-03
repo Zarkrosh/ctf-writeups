@@ -5,6 +5,7 @@
 * [Forensics - Memory 3](#forensics---memory-3)
 * [Forensics - Memory 4](#forensics---memory-4)
 * [Forensics - Memory 5](#forensics---memory-5)
+* [Forensics - Infection](#forensics---infection)
 * [Bash - CapiCapi](#bash---capicapi)
 * [Bash - Bash is fun](#bash---bash-is-fun)
 * [Reversing - Tornado](#reversing---tornado)
@@ -115,6 +116,10 @@ Jugando con los valores de desplazamiento y anchura del diálogo se puede ver la
 
 **FwordCTF{Paint_Skills_FTW!}**
 
+
+## Forensics - Infection
+
+[Write-up Jandrov](https://github.com/Jandrov/ctf-writeups/tree/master/2020-FwordCTF#forensics---infection)
 
 
 ## OSINT - Identity Fraud
