@@ -111,6 +111,7 @@ At the beginning I was on the right way, trying to recover the content from the 
 The intended solution is to locate the anonymous file descriptor, parse its structure and use the inode number of the file to dump it using the find_files plugin.
 
 For it, I used linux_lsof plugin to dump all the open file descriptors for all the processes:
+
 <code>vol.py -f dump.mem --profile=LinuxUbuntu_4_15_0-184-generic_profilex64 linux_lsof > linux_lsof.txt</code>
 
 I saw that the process python3 had 4 file descriptors opened: 0-2 (stdin/stdout/stderr on pseudo-terminal) and a 4th file descriptor with no path (the anonymous file created).
