@@ -2,6 +2,8 @@
 
 - [Write-up HTB Business CTF 2022](#write-up-htb-business-ctf-2022)
   - [Forensics - SquatBot](#forensics---squatbot)
+    - [Unintended solution: search for crypted received data](#unintended-solution-search-for-crypted-received-data)
+    - [Intended solution: dump inode of anonymous file](#intended-solution-dump-inode-of-anonymous-file)
 
 ## Forensics - SquatBot 
 🩸 **First Blood**
@@ -24,7 +26,7 @@ Taking a look at the repository, I saw that it was new and had no stars. However
 
 Boto3 is the Amazon Web Services (AWS) Software Development Kit (SDK) for Python, which allows Python developers to write software that makes useof services like Amazon S3 and Amazon EC2. You can find the latest, mostup to date, documentation at our doc site, including a list ofservices that are supported.
 
-I found that the original boto3 project wass located on https://github.com/boto/boto3, so it appeared to be an impersonation with some malicious code inside. The file CHANGELOG.rst from the fake repository says that the last version is 1.24.9. I cloned the original repository and went back to a commit from that version (original was on 1.24.31).
+I found that the original boto3 project was located on https://github.com/boto/boto3, so it appeared to be a clone with some malicious code inside that tried to exploit a typosquatting error from a developer. The file CHANGELOG.rst from the fake repository says that the last version is 1.24.9. I cloned the original repository and went back to a commit from that version (original was on 1.24.31).
 
 ```
 git clone https://github.com/boto/boto3
@@ -59,7 +61,9 @@ Finally it does a C2 callback to files.pypi-install.com with some info of the co
 
 The host from where the XORed malware was received was down, so the only way to see what was run on the machine was to recover it from memory.
 
-At this point I blocked for a while, enumerating files looking for file descriptors in /proc, llisting and dumping proc_maps from the python3 and other processes, looking for loaded ELFs in dynamic sections, with no progress.
+### Unintended solution: search for crypted received data
+
+At this point I blocked for a while, enumerating files looking for file descriptors in /proc, listing and dumping proc_maps from the python3 and other processes, looking for loaded ELFs in dynamic sections, unsuccessfully.
 
 After some time, the idea that the received data connection might still be available in the memory came to my mind, as the python3 process was still running. This data should be encrypted with key 239, and instead of keep dumping things I just decided to XOR the entire memory dump with that key. If the data was still there, I should be able to find some data like ELF headers, strings and so. And I did.
 
@@ -95,4 +99,29 @@ That decrypted data was the flag:
 
 <p align="center">
   <img src="images/squatbot_11.png">
+</p>
+
+
+### Intended solution: dump inode of anonymous file
+
+After the end of the CTF, I talked with the challenge's creator ([thewildspirit](https://twitter.com/_thewildspirit)) about my unintended solution, and told me that the intended solution was even easier than what I did 😂.
+
+At the beginning I was on the right way, trying to recover the content from the anonymous file descriptor created by the malware, but I struggled with Volatility's functionalities and didn't go low level.
+
+The intended solution is to locate the anonymous file descriptor, parse its structure and use the inode number of the file to dump it using the find_files plugin.
+
+For it, I used linux_lsof plugin to dump all the open file descriptors for all the processes:
+<code>vol.py -f dump.mem --profile=LinuxUbuntu_4_15_0-184-generic_profilex64 linux_lsof > linux_lsof.txt</code>
+
+I saw that the process python3 had 4 file descriptors opened: 0-2 (stdin/stdout/stderr on pseudo-terminal) and a 4th file descriptor with no path (the anonymous file created).
+
+Then I spawned a volshell on the memory dump, changed the context to the python3 process (PID 1451) and dumped the inode of all the files referenced by the file descriptors. The commands I used were deduced from [Volatility's code](https://github.com/volatilityfoundation/volatility/blob/master/volatility/plugins/linux/lsof.py). Using the last inode value, I could dump the content of the anonymous file:
+
+<p align="center">
+  <img src="images/squatbot_12.png">
+</p>
+
+This ELF was completely correct, unlike the one that I dumped my way (function names were shown):
+<p align="center">
+  <img src="images/squatbot_13.png">
 </p>
